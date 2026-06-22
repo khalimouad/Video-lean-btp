@@ -1,0 +1,61 @@
+name: Render Lean Six Sigma BTP Video
+
+on:
+  push:
+    branches:
+      - claude/remotion-video-creation-miq7ku
+      - main
+  workflow_dispatch:
+
+jobs:
+  render:
+    name: Render MP4
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Chrome (Remotion headless shell)
+        run: npx remotion browser ensure
+
+      - name: Render MP4 (90s · 1920×1080 · 30fps)
+        run: npx remotion render LeanSixSigmaBTP out/video.mp4 --overwrite --log=verbose
+        timeout-minutes: 30
+
+      - name: Upload MP4 as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: lean-six-sigma-btp-video
+          path: out/video.mp4
+          retention-days: 30
+
+      - name: Create GitHub Release with MP4
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: video-latest
+          name: "Lean Six Sigma dans le BTP — Vidéo MP4"
+          body: |
+            ## Lean Six Sigma dans le BTP
+            Vidéo animée Remotion · 90 secondes · 1920×1080 · 30fps
+
+            **Scènes :**
+            1. Introduction (10s)
+            2. Problèmes BTP — 57% / 30% / 20% (15s)
+            3. Les 8 Gaspillages — diagramme radial (20s)
+            4. DMAIC — exemple bétonnage (20s)
+            5. 6 Outils Lean Construction (15s)
+            6. Résultats — -25% / -20% / +30% (10s)
+          files: out/video.mp4
+          make_latest: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
