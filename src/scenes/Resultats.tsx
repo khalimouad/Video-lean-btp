@@ -1,68 +1,74 @@
 import React from "react";
-import { AbsoluteFill, interpolate, useCurrentFrame } from "remotion";
+import { AbsoluteFill, interpolate, spring, useCurrentFrame, useVideoConfig } from "remotion";
 import { C, F } from "../colors";
 
-const RESULTS = [
-  { label: "Réduction des délais de livraison",  value: -35, color: C.green,  icon: "⏱", prefix: "-" },
-  { label: "Réduction des coûts de construction", value: -28, color: C.blue,   icon: "💰", prefix: "-" },
-  { label: "Gain de productivité terrain",         value: 42,  color: C.orange, icon: "⚡", prefix: "+" },
-  { label: "Satisfaction client",                  value: 60,  color: C.purple, icon: "⭐", prefix: "+" },
+const STATS = [
+  { emoji: "📉", label: "Réduction des retards de livraison",  value: 25, prefix: "-", color: "#22c55e",  start: 40  },
+  { emoji: "📉", label: "Réduction des coûts de construction",  value: 20, prefix: "-", color: "#3b82f6",  start: 105 },
+  { emoji: "📈", label: "Gain de productivité sur le terrain",  value: 30, prefix: "+", color: "#f97316",  start: 170 },
 ];
 
-const ResultBar: React.FC<{
-  r: (typeof RESULTS)[0];
-  startFrame: number;
-}> = ({ r, startFrame }) => {
+const StatBlock: React.FC<{ s: (typeof STATS)[0] }> = ({ s }) => {
   const frame = useCurrentFrame();
+  const { fps } = useVideoConfig();
   const clamp = { extrapolateLeft: "clamp" as const, extrapolateRight: "clamp" as const };
 
-  const op        = interpolate(frame, [startFrame, startFrame + 20], [0, 1], clamp);
-  const y         = interpolate(frame, [startFrame, startFrame + 20], [30, 0], clamp);
-  const count     = Math.round(interpolate(frame, [startFrame + 20, startFrame + 70], [0, Math.abs(r.value)], clamp));
-  const barWidth  = interpolate(frame, [startFrame + 20, startFrame + 75], [0, Math.abs(r.value)], clamp);
+  const op    = interpolate(frame, [s.start, s.start + 22], [0, 1], clamp);
+  const y     = interpolate(frame, [s.start, s.start + 22], [40, 0], clamp);
+  const count = Math.round(interpolate(frame, [s.start + 18, s.start + 72], [0, s.value], clamp));
+  const barW  = interpolate(frame, [s.start + 18, s.start + 80], [0, s.value * 3], clamp); // max 90%
+
+  const glowScale = spring({ fps, frame: Math.max(0, frame - (s.start + 18)), config: { stiffness: 60, damping: 14 }, durationInFrames: 40 });
 
   return (
     <div
       style={{
         opacity: op,
         transform: `translateY(${y}px)`,
-        marginBottom: 28,
+        marginBottom: 32,
       }}
     >
-      <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 10, alignItems: "center" }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
-          <span style={{ fontSize: 28 }}>{r.icon}</span>
-          <span style={{ color: C.white, fontSize: 20, fontWeight: 600 }}>{r.label}</span>
+      {/* Stat row */}
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 14 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 18 }}>
+          <span style={{ fontSize: 36 }}>{s.emoji}</span>
+          <span style={{ color: C.white, fontSize: 22, fontWeight: 600 }}>{s.label}</span>
         </div>
+
+        {/* Counter */}
         <div
           style={{
-            color: r.color,
-            fontSize: 42,
+            color: s.color,
+            fontSize: 72,
             fontWeight: 900,
             fontVariantNumeric: "tabular-nums",
+            lineHeight: 1,
+            transform: `scale(${glowScale})`,
+            transformOrigin: "right center",
+            textShadow: `0 0 40px ${s.color}88`,
           }}
         >
-          {r.prefix}{count}%
+          {s.prefix}{count}%
         </div>
       </div>
 
-      {/* Bar track */}
+      {/* Animated bar */}
       <div
         style={{
-          height: 16,
-          background: `${r.color}22`,
-          borderRadius: 8,
+          height: 18,
+          background: `${s.color}1a`,
+          borderRadius: 9,
           overflow: "hidden",
-          border: `1px solid ${r.color}44`,
+          border: `1px solid ${s.color}44`,
         }}
       >
         <div
           style={{
             height: "100%",
-            width: `${barWidth}%`,
-            background: `linear-gradient(90deg, ${r.color}88, ${r.color})`,
-            borderRadius: 8,
-            boxShadow: `0 0 16px ${r.color}66`,
+            width: `${barW}%`,
+            background: `linear-gradient(90deg, ${s.color}66, ${s.color})`,
+            borderRadius: 9,
+            boxShadow: `0 0 20px ${s.color}88`,
           }}
         />
       </div>
@@ -73,14 +79,14 @@ const ResultBar: React.FC<{
 export const ResultatsScene: React.FC = () => {
   const frame = useCurrentFrame();
   const clamp = { extrapolateLeft: "clamp" as const, extrapolateRight: "clamp" as const };
-  const sceneOp = interpolate(frame, [0, 20, 248, 270], [0, 1, 1, 0], clamp);
+  const sceneOp = interpolate(frame, [0, 20, 278, 300], [0, 1, 1, 0], clamp);
 
-  const windows = [25, 90, 150, 205];
+  const conclusionOp = interpolate(frame, [240, 265], [0, 1], clamp);
 
   return (
     <AbsoluteFill
       style={{
-        background: `linear-gradient(140deg, ${C.bg} 0%, #0f1e12 100%)`,
+        background: `linear-gradient(140deg, ${C.bg} 0%, #0c1a0e 100%)`,
         padding: "0 140px",
         display: "flex",
         flexDirection: "column",
@@ -89,17 +95,12 @@ export const ResultatsScene: React.FC = () => {
         fontFamily: F,
       }}
     >
-      {/* Background glow */}
+      {/* Glow */}
       <div
         style={{
           position: "absolute",
-          top: "50%",
-          left: "50%",
-          transform: "translate(-50%, -50%)",
-          width: 800,
-          height: 800,
-          borderRadius: "50%",
-          background: `radial-gradient(ellipse, ${C.green}0a 0%, transparent 70%)`,
+          inset: 0,
+          background: `radial-gradient(ellipse at 60% 50%, ${C.green}0c 0%, transparent 65%)`,
           pointerEvents: "none",
         }}
       />
@@ -107,15 +108,15 @@ export const ResultatsScene: React.FC = () => {
       <div
         style={{
           color: C.green,
-          fontSize: 16,
+          fontSize: 15,
           fontWeight: 700,
           letterSpacing: "4px",
           textTransform: "uppercase",
-          marginBottom: 16,
+          marginBottom: 14,
           opacity: interpolate(frame, [5, 25], [0, 1], clamp),
         }}
       >
-        Bénéfices mesurés
+        Résultats mesurés
       </div>
 
       <div
@@ -125,26 +126,35 @@ export const ResultatsScene: React.FC = () => {
           fontWeight: 900,
           marginBottom: 52,
           opacity: interpolate(frame, [5, 28], [0, 1], clamp),
-          transform: `translateY(${interpolate(frame, [5, 28], [30, 0], clamp)}px)`,
+          transform: `translateY(${interpolate(frame, [5, 28], [28, 0], clamp)}px)`,
         }}
       >
-        Résultats concrets sur chantier
+        Le Lean Six Sigma transforme vos chantiers
       </div>
 
-      {RESULTS.map((r, i) => (
-        <ResultBar key={i} r={r} startFrame={windows[i]} />
+      {STATS.map((s, i) => (
+        <StatBlock key={i} s={s} />
       ))}
 
-      {/* Source note */}
+      {/* Closing line */}
       <div
         style={{
-          color: C.gray,
-          fontSize: 15,
+          opacity: conclusionOp,
           marginTop: 24,
-          opacity: interpolate(frame, [220, 240], [0, 1], clamp),
+          padding: "18px 28px",
+          background: `linear-gradient(90deg, ${C.orange}18, ${C.purple}18)`,
+          border: `1px solid ${C.border}`,
+          borderRadius: 12,
+          color: C.text,
+          fontSize: 20,
+          fontWeight: 600,
+          textAlign: "center",
         }}
       >
-        * Moyennes observées sur des projets BTP ayant adopté le Lean Six Sigma — McKinsey, OPPBTP, études terrain
+        🏗️ Le Lean Six Sigma transforme les chantiers en systèmes{" "}
+        <span style={{ color: C.orange }}>prévisibles</span>,{" "}
+        <span style={{ color: C.blue }}>collaboratifs</span> et{" "}
+        <span style={{ color: C.green }}>performants</span>.
       </div>
     </AbsoluteFill>
   );

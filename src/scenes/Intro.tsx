@@ -25,7 +25,7 @@ export const Intro: React.FC = () => {
   const subOp        = interpolate(frame, [38, 62], [0, 1],    clamp);
   const lineW        = interpolate(frame, [52, 83], [0, 700],  clamp);
   const taglineOp    = interpolate(frame, [65, 82], [0, 1],    clamp);
-  const sceneOp      = interpolate(frame, [80, 90], [1, 0],    clamp);
+  const sceneOp      = interpolate(frame, [275, 300], [1, 0],    clamp);
 
   return (
     <AbsoluteFill

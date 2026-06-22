@@ -94,7 +94,7 @@ const StatCard: React.FC<StatCardProps> = ({
 export const Probleme: React.FC = () => {
   const frame = useCurrentFrame();
   const clamp = { extrapolateLeft: "clamp" as const, extrapolateRight: "clamp" as const };
-  const sceneOp = interpolate(frame, [0, 20, 250, 270], [0, 1, 1, 0], clamp);
+  const sceneOp = interpolate(frame, [0, 20, 425, 450], [0, 1, 1, 0], clamp);
 
   return (
     <AbsoluteFill
