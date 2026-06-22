@@ -1,19 +1,24 @@
 {
   "name": "video-lean-btp",
   "version": "1.0.0",
-  "description": "Lean Six Sigma dans le BTP — Animation Remotion",
+  "description": "Lean Six Sigma dans le BTP — Remotion + Next.js",
   "scripts": {
-    "start": "remotion preview",
-    "studio": "remotion studio",
-    "build": "remotion render LeanSixSigmaBTP out/video.mp4 --overwrite"
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "render": "remotion render LeanSixSigmaBTP out/video.mp4 --overwrite",
+    "studio": "remotion studio"
   },
   "dependencies": {
-    "@remotion/cli": "^4.0.0",
+    "@remotion/player": "^4.0.0",
     "remotion": "^4.0.0",
+    "next": "^14.0.0",
     "react": "^18.0.0",
     "react-dom": "^18.0.0"
   },
   "devDependencies": {
+    "@remotion/cli": "^4.0.0",
+    "@types/node": "^20.0.0",
     "@types/react": "^18.0.0",
     "@types/react-dom": "^18.0.0",
     "typescript": "^5.0.0"
