@@ -65,7 +65,7 @@ export default function PlayerWrapper() {
             marginBottom: 0,
           }}
         >
-          90 secondes · 6 scènes · Performance &amp; Qualité
+          5 min 45 sec · 8 scènes · Avant / Après Lean Six Sigma
         </p>
       </div>
 
@@ -81,7 +81,7 @@ export default function PlayerWrapper() {
       >
         <Player
           component={LeanSixSigmaVideo}
-          durationInFrames={2700}
+          durationInFrames={10350}
           fps={30}
           compositionWidth={1920}
           compositionHeight={1080}
@@ -106,12 +106,14 @@ export default function PlayerWrapper() {
         }}
       >
         {[
-          { t: "01 · Intro", s: "0–10s", c: "#f97316" },
-          { t: "02 · Problèmes BTP", s: "10–25s", c: "#3b82f6" },
-          { t: "03 · 8 Gaspillages", s: "25–45s", c: "#22c55e" },
-          { t: "04 · DMAIC", s: "45–65s", c: "#a855f7" },
-          { t: "05 · 6 Outils", s: "65–80s", c: "#f59e0b" },
-          { t: "06 · Résultats", s: "80–90s", c: "#06b6d4" },
+          { t: "01 · Accroche", s: "0:00–0:20", c: "#f97316" },
+          { t: "02 · Constat BTP", s: "0:20–1:05", c: "#3b82f6" },
+          { t: "03 · Avant Chantier", s: "1:05–2:10", c: "#ef4444" },
+          { t: "04 · DMAIC", s: "2:10–3:10", c: "#a855f7" },
+          { t: "05 · Outils Lean", s: "3:10–4:10", c: "#f59e0b" },
+          { t: "06 · Après Chantier", s: "4:10–4:45", c: "#22c55e" },
+          { t: "07 · KPIs Avant/Après", s: "4:45–5:20", c: "#06b6d4" },
+          { t: "08 · Conclusion", s: "5:20–5:45", c: "#a855f7" },
         ].map((item) => (
           <div
             key={item.t}

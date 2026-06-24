@@ -28,9 +28,9 @@ jobs:
       - name: Install Chrome (Remotion headless shell)
         run: npx remotion browser ensure
 
-      - name: Render MP4 (90s · 1920×1080 · 30fps)
-        run: npx remotion render LeanSixSigmaBTP out/video.mp4 --overwrite --log=verbose
-        timeout-minutes: 30
+      - name: Render MP4 (5m45s · 1920×1080 · 30fps)
+        run: npx remotion render LeanSixSigmaBTP out/video.mp4 --overwrite --concurrency=4 --log=verbose
+        timeout-minutes: 90
 
       - name: Upload MP4 as artifact
         uses: actions/upload-artifact@v4
@@ -43,18 +43,20 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           tag_name: video-latest
-          name: "Lean Six Sigma dans le BTP — Vidéo MP4"
+          name: "Lean Six Sigma dans le BTP — Vidéo MP4 (5m45s)"
           body: |
             ## Lean Six Sigma dans le BTP
-            Vidéo animée Remotion · 90 secondes · 1920×1080 · 30fps
+            Vidéo animée Remotion · 5 min 45 sec · 1920×1080 · 30fps · 10 350 frames
 
             **Scènes :**
-            1. Introduction (10s)
-            2. Problèmes BTP — 57% / 30% / 20% (15s)
-            3. Les 8 Gaspillages — diagramme radial (20s)
-            4. DMAIC — exemple bétonnage (20s)
-            5. 6 Outils Lean Construction (15s)
-            6. Résultats — -25% / -20% / +30% (10s)
+            1. Accroche — titre & stat (20s)
+            2. Constat BTP — 4 indicateurs chiffrés (45s)
+            3. AVANT le chantier — 5 gaspillages (70s)
+            4. DMAIC — cycle Six Sigma complet (60s)
+            5. 6 Outils Lean — Last Planner, 5S… (60s)
+            6. APRÈS le chantier — le chantier transformé (35s)
+            7. KPIs Avant/Après — tableau animé (35s)
+            8. Conclusion — culture d'amélioration continue (20s)
           files: out/video.mp4
           make_latest: true
         env:

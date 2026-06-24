@@ -2,164 +2,121 @@ import React from "react";
 import { AbsoluteFill, interpolate, spring, useCurrentFrame, useVideoConfig } from "remotion";
 import { C, F } from "../colors";
 
-const KEY_POINTS = [
-  { icon: "🚀", text: "Démarrez par un projet pilote sur un chantier ciblé" },
-  { icon: "👥", text: "Impliquez vos équipes terrain dès le départ" },
-  { icon: "📊", text: "Mesurez, apprenez et améliorez en continu" },
+// Storyboard Plan 7 (2:45–3:05) — Conclusion & call-to-action
+const PILLARS = [
+  { icon: "🔍", label: "Diagnostic", desc: "Observez, mesurez, ne présumez pas.", color: "#3b82f6", start: 160 },
+  { icon: "🤝", label: "Collaboration", desc: "Le terrain sait — impliquez-le.", color: "#22c55e", start: 240 },
+  { icon: "📈", label: "Amélioration", desc: "Petits gains répétés = grande transformation.", color: "#f97316", start: 320 },
+  { icon: "🔄", label: "Pérennisation", desc: "Standardisez ce qui fonctionne, ancrez la culture.", color: "#a855f7", start: 400 },
 ];
 
-export const ConclusionScene: React.FC = () => {
+export const Conclusion: React.FC = () => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
-  const clamp = { extrapolateLeft: "clamp" as const, extrapolateRight: "clamp" as const };
-  const sceneOp = interpolate(frame, [0, 25, 188, 210], [0, 1, 1, 0], clamp);
+  const cl = { extrapolateLeft: "clamp" as const, extrapolateRight: "clamp" as const };
 
-  const titleScale = spring({
-    fps,
-    frame: Math.max(0, frame - 15),
-    config: { stiffness: 80, damping: 12 },
-    durationInFrames: 40,
-  });
+  const sceneOp = interpolate(frame, [0, 22, 560, 600], [0, 1, 1, 0], cl);
 
-  const line1Op = interpolate(frame, [15, 45], [0, 1], clamp);
-  const line1Y  = interpolate(frame, [15, 45], [50, 0], clamp);
-  const line2Op = interpolate(frame, [40, 68], [0, 1], clamp);
-  const line2Y  = interpolate(frame, [40, 68], [40, 0], clamp);
+  const titleSc = spring({ fps, frame: Math.max(0, frame - 15), config: { stiffness: 80, damping: 13 }, durationInFrames: 40 });
 
-  const ctaOp = interpolate(frame, [130, 158], [0, 1], clamp);
-  const ctaY  = interpolate(frame, [130, 158], [30, 0], clamp);
+  const line1Op = interpolate(frame, [15, 45], [0, 1], cl);
+  const line1Y  = interpolate(frame, [15, 45], [40, 0], cl);
+  const line2Op = interpolate(frame, [35, 62], [0, 1], cl);
+  const line2Y  = interpolate(frame, [35, 62], [30, 0], cl);
+  const quoteOp = interpolate(frame, [75, 105], [0, 1], cl);
+  const lineW   = interpolate(frame, [60, 100], [0, 900], cl);
+
+  // "Commencer maintenant" CTA fade-in late
+  const ctaOp = interpolate(frame, [480, 520], [0, 1], cl);
+  const ctaY  = interpolate(frame, [480, 520], [28, 0], cl);
 
   return (
-    <AbsoluteFill
-      style={{
-        background: `linear-gradient(135deg, ${C.bg} 0%, #1e1545 50%, ${C.bgMid} 100%)`,
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "center",
-        padding: "0 120px",
-        opacity: sceneOp,
-        fontFamily: F,
-        textAlign: "center",
-      }}
-    >
+    <AbsoluteFill style={{
+      background: "linear-gradient(140deg, #0a0f1e 0%, #1a0a2e 50%, #0f1a0a 100%)",
+      display: "flex", flexDirection: "column",
+      alignItems: "center", justifyContent: "center",
+      padding: "60px 140px",
+      opacity: sceneOp, fontFamily: F,
+      textAlign: "center",
+    }}>
       {/* Radial glow */}
-      <div
-        style={{
-          position: "absolute",
-          inset: 0,
-          background: `radial-gradient(ellipse at center, ${C.purple}12 0%, transparent 65%)`,
-          pointerEvents: "none",
-        }}
-      />
+      <div style={{
+        position: "absolute", inset: 0, pointerEvents: "none",
+        background: `radial-gradient(ellipse at 50% 40%, ${C.green}0e 0%, transparent 60%)`,
+      }} />
 
-      {/* Grid lines */}
-      <div style={{ position: "absolute", inset: 0, overflow: "hidden", opacity: 0.03 }}>
-        <svg width="100%" height="100%">
-          <defs>
-            <pattern id="cg" width="60" height="60" patternUnits="userSpaceOnUse">
-              <path d="M 60 0 L 0 0 0 60" fill="none" stroke={C.purple} strokeWidth="1" />
-            </pattern>
-          </defs>
-          <rect width="100%" height="100%" fill="url(#cg)" />
-        </svg>
+      {/* Badge */}
+      <div style={{ opacity: interpolate(frame, [5, 22], [0, 1], cl), marginBottom: 20 }}>
+        <span style={{ background: C.green, color: "#fff", fontSize: 12, fontWeight: 900, letterSpacing: "5px", padding: "6px 24px", borderRadius: 20 }}>
+          CONCLUSION
+        </span>
       </div>
 
-      {/* Headline */}
-      <div
-        style={{
-          opacity: line1Op,
-          transform: `translateY(${line1Y}px) scale(${titleScale})`,
-          marginBottom: 8,
-        }}
-      >
-        <div
-          style={{
-            color: C.white,
-            fontSize: 80,
-            fontWeight: 900,
-            letterSpacing: "-3px",
-            lineHeight: 1,
-          }}
-        >
-          Transformez
+      {/* Main headline */}
+      <div style={{ opacity: line1Op, transform: `translateY(${line1Y}px) scale(${titleSc})`, marginBottom: 6 }}>
+        <div style={{ color: C.white, fontSize: 68, fontWeight: 900, letterSpacing: "-2px", lineHeight: 1.05 }}>
+          Le Lean n'est pas une
+        </div>
+      </div>
+      <div style={{ opacity: line2Op, transform: `translateY(${line2Y}px)`, marginBottom: 28 }}>
+        <div style={{ color: C.green, fontSize: 68, fontWeight: 900, letterSpacing: "-2px", lineHeight: 1.05 }}>
+          boîte à outils.
         </div>
       </div>
 
-      <div
-        style={{
-          opacity: line2Op,
-          transform: `translateY(${line2Y}px)`,
-          marginBottom: 32,
-        }}
-      >
-        <span style={{ color: C.orange, fontSize: 72, fontWeight: 900, letterSpacing: "-2px" }}>
-          vos chantiers
-        </span>
-        <br />
-        <span style={{ color: C.gray, fontSize: 38, fontWeight: 600 }}>
-          avec le Lean Six Sigma
-        </span>
+      {/* Gradient line */}
+      <div style={{
+        width: lineW, height: 4,
+        background: `linear-gradient(90deg, ${C.green}, ${C.blue})`,
+        borderRadius: 2, marginBottom: 32,
+      }} />
+
+      {/* Storyboard quote */}
+      <div style={{
+        opacity: quoteOp, maxWidth: 900, marginBottom: 44,
+        color: C.gray, fontSize: 24, lineHeight: 1.65, fontStyle: "italic",
+        borderLeft: `3px solid ${C.green}`, paddingLeft: 24, textAlign: "left",
+      }}>
+        "C'est une culture d'amélioration continue. Et ça commence sur votre prochain chantier."
       </div>
 
-      {/* Gradient divider */}
-      <div
-        style={{
-          width: interpolate(frame, [65, 95], [0, 600], clamp),
-          height: 3,
-          background: `linear-gradient(90deg, ${C.orange}, ${C.purple})`,
-          borderRadius: 2,
-          marginBottom: 40,
-        }}
-      />
-
-      {/* Key points */}
-      {KEY_POINTS.map((kp, i) => {
-        const op = interpolate(frame, [78 + i * 18, 96 + i * 18], [0, 1], clamp);
-        const x  = interpolate(frame, [78 + i * 18, 96 + i * 18], [40, 0], clamp);
-        return (
-          <div
-            key={i}
-            style={{
-              opacity: op,
-              transform: `translateX(${x}px)`,
-              display: "flex",
-              alignItems: "center",
-              gap: 16,
-              marginBottom: 14,
-              padding: "14px 28px",
-              background: C.bgCard,
-              borderRadius: 12,
-              border: `1px solid ${C.border}`,
-              width: "100%",
-              maxWidth: 780,
-            }}
-          >
-            <span style={{ fontSize: 28 }}>{kp.icon}</span>
-            <span style={{ color: C.text, fontSize: 20, fontWeight: 600, textAlign: "left" }}>
-              {kp.text}
-            </span>
-          </div>
-        );
-      })}
+      {/* 4 pillars */}
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr 1fr", gap: 18, width: "100%", marginBottom: 40 }}>
+        {PILLARS.map((p) => {
+          const op = interpolate(frame, [p.start, p.start + 28], [0, 1], cl);
+          const y  = interpolate(frame, [p.start, p.start + 28], [32, 0], cl);
+          return (
+            <div key={p.label} style={{
+              opacity: op, transform: `translateY(${y}px)`,
+              padding: "22px 20px",
+              background: `${p.color}10`,
+              border: `1px solid ${p.color}44`,
+              borderTop: `3px solid ${p.color}`,
+              borderRadius: 14, textAlign: "center",
+            }}>
+              <div style={{ fontSize: 32, marginBottom: 10 }}>{p.icon}</div>
+              <div style={{ color: p.color, fontSize: 14, fontWeight: 800, letterSpacing: "2px", textTransform: "uppercase", marginBottom: 8 }}>{p.label}</div>
+              <div style={{ color: C.gray, fontSize: 15, lineHeight: 1.5 }}>{p.desc}</div>
+            </div>
+          );
+        })}
+      </div>
 
       {/* CTA */}
-      <div
-        style={{
-          opacity: ctaOp,
-          transform: `translateY(${ctaY}px)`,
-          marginTop: 32,
-          padding: "20px 52px",
-          background: `linear-gradient(90deg, ${C.orange}, ${C.purple})`,
+      <div style={{ opacity: ctaOp, transform: `translateY(${ctaY}px)` }}>
+        <div style={{
+          padding: "22px 60px",
+          background: `linear-gradient(90deg, ${C.green}, ${C.blue})`,
           borderRadius: 50,
-          fontSize: 24,
-          fontWeight: 800,
-          color: C.white,
-          letterSpacing: "1px",
-          boxShadow: `0 8px 40px ${C.orange}44`,
-        }}
-      >
-        🏗️ Passez à l'action sur votre chantier dès aujourd'hui
+          fontSize: 24, fontWeight: 800, color: "#fff",
+          letterSpacing: "0.5px",
+          boxShadow: `0 12px 50px ${C.green}44`,
+        }}>
+          🏗️ Démarrez votre chantier pilote dès demain
+        </div>
+        <div style={{ color: C.gray, fontSize: 14, marginTop: 18, letterSpacing: "1px" }}>
+          Lean Six Sigma · Last Planner System · Amélioration continue en BTP
+        </div>
       </div>
     </AbsoluteFill>
   );
